@@ -1,0 +1,29 @@
+version: '3.2'
+
+services:  
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: ppclick
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - elk
+    volumes:  
+      - ./config/rabbitmq/data:/var/lib/rabbitmq:rw
+      - ./config/rabbitmq/config/definitions.json:/opt/definitions.json:ro
+      - ./config/rabbitmq/config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+    healthcheck:
+      timeout: 10s
+      interval: 30s
+      retries: 5
+      test:
+        - "CMD"
+        - "rabbitmqctl"
+        - "status"
+
+networks:
+  elk:
+    driver: bridge
+
